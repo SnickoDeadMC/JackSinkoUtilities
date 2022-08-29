@@ -20,7 +20,7 @@ public class Updatable : MonoBehaviour
     private bool isLateUpdateUsed;
     private bool isFixedUpdateUsed;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         if (!initialised)
         {
