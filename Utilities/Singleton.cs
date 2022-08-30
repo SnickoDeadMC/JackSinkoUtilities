@@ -13,6 +13,13 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
     protected override void Initialise()
     {
         base.Initialise();
+
+        if (Instance != null)
+        {
+            //instance already exists, so just remove this new one
+            Destroy(gameObject);
+            return;
+        }
         
         Instance = this as T;
         
