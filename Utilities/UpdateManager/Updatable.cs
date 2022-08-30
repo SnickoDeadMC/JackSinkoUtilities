@@ -14,7 +14,8 @@ public class Updatable : MonoBehaviour
     private static readonly Type baseType = typeof(Updatable);
 
     [Foldout("Updatable"), SerializeField, ReadOnly]
-    protected bool initialised = false;
+    protected bool isInitialised = false;
+    public bool IsInitialised => isInitialised;
     
     private bool isUpdateUsed;
     private bool isLateUpdateUsed;
@@ -22,7 +23,7 @@ public class Updatable : MonoBehaviour
 
     protected virtual void Awake()
     {
-        if (!initialised)
+        if (!isInitialised)
         {
             Initialise();
         }
@@ -30,7 +31,7 @@ public class Updatable : MonoBehaviour
     
     protected virtual void Initialise()
     {
-        initialised = true;
+        isInitialised = true;
         
         Type finalType = GetType();
         isUpdateUsed = IsMethodUsed(finalType, "FastUpdate");
