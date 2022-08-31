@@ -17,12 +17,12 @@ public class UpdateManager : Singleton<UpdateManager>
 
     private void FixedUpdate()
     {
-        OnLateUpdate?.Invoke();
+        OnFixedUpdate?.Invoke();
     }
 
     private void LateUpdate()
     {
-        OnFixedUpdate?.Invoke();
+        OnLateUpdate?.Invoke();
     }
     
 }
