@@ -23,6 +23,7 @@ public class Updatable : MonoBehaviour
     [Space(5)]
     [SerializeField, ReadOnly] protected bool updateIsRegistered;
     [SerializeField, ReadOnly] protected bool lateUpdateIsRegistered;
+    [Foldout("Updatable")] //end the foldout
     [SerializeField, ReadOnly] protected bool fixedUpdateIsRegistered;
         
     protected virtual void Awake()
