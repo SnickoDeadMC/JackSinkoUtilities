@@ -13,17 +13,21 @@ public class Updatable : MonoBehaviour
     
     private static readonly Type baseType = typeof(Updatable);
 
-    [Foldout("Updatable"), SerializeField, ReadOnly]
-    protected bool isInitialised = false;
-    public bool IsInitialised => isInitialised;
-    
-    private bool isUpdateUsed;
-    private bool isLateUpdateUsed;
-    private bool isFixedUpdateUsed;
-
+    [Foldout("Updatable", true)]
+    [SerializeField, ReadOnly] protected bool initialised = false;
+    public bool IsInitialised => initialised;
+    [Space(5)]
+    [SerializeField, ReadOnly] protected bool isUpdateUsed;
+    [SerializeField, ReadOnly] protected bool isLateUpdateUsed;
+    [SerializeField, ReadOnly] protected bool isFixedUpdateUsed;
+    [Space(5)]
+    [SerializeField, ReadOnly] protected bool updateIsRegistered;
+    [SerializeField, ReadOnly] protected bool lateUpdateIsRegistered;
+    [SerializeField, ReadOnly] protected bool fixedUpdateIsRegistered;
+        
     protected virtual void Awake()
     {
-        if (!isInitialised)
+        if (!initialised)
         {
             Initialise();
         }
@@ -31,7 +35,7 @@ public class Updatable : MonoBehaviour
     
     protected virtual void Initialise()
     {
-        isInitialised = true;
+        initialised = true;
         
         Type finalType = GetType();
         isUpdateUsed = IsMethodUsed(finalType, "FastUpdate");
@@ -53,14 +57,17 @@ public class Updatable : MonoBehaviour
     {
         if (isUpdateUsed) {
             UpdateManager.Instance.OnUpdate += FastUpdate;
+            updateIsRegistered = true;
         }
         
         if (isLateUpdateUsed) {
             UpdateManager.Instance.OnLateUpdate += FastLateUpdate;
+            lateUpdateIsRegistered = true;
         }
 
         if (isFixedUpdateUsed) {
             UpdateManager.Instance.OnFixedUpdate += FastFixedUpdate;
+            fixedUpdateIsRegistered = true;
         }
     }
 
@@ -69,16 +76,19 @@ public class Updatable : MonoBehaviour
         if (isUpdateUsed)
         {
             UpdateManager.Instance.OnUpdate -= FastUpdate;
+            updateIsRegistered = false;
         }
 
         if (isLateUpdateUsed)
         {
             UpdateManager.Instance.OnLateUpdate -= FastLateUpdate;
+            lateUpdateIsRegistered = false;
         }
 
         if (isFixedUpdateUsed)
         {
             UpdateManager.Instance.OnFixedUpdate -= FastFixedUpdate;
+            fixedUpdateIsRegistered = false;
         }
     }
     
