@@ -17,6 +17,7 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
         if (Instance != null)
         {
             //instance already exists, so just remove this new one
+            gameObject.SetActive(false); //set inactive so it doesn't trigger colliders etc.
             Destroy(gameObject);
             return;
         }
