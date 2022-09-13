@@ -8,8 +8,8 @@ using System;
 public static class CoroutineHelper
 {
 
-    public static void PerformAfterDelay(Action action, float delay) => RunCoroutine(WaitForSecondsIE(action, delay));
-    private static IEnumerator<float> WaitForSecondsIE(Action action, float delay)
+    public static void PerformAfterDelay(float delay, Action action) => RunCoroutine(WaitForSecondsIE(delay, action));
+    private static IEnumerator<float> WaitForSecondsIE(float delay, Action action)
     {
         if (delay > 0)
         {
@@ -19,8 +19,8 @@ public static class CoroutineHelper
         action.Invoke();
     }
     
-    public static void PerformAfterTrue(Action action, Func<bool> condition) => RunCoroutine(WaitUntilTrueIE(action, condition));
-    private static IEnumerator<float> WaitUntilTrueIE(Action action, Func<bool> condition)
+    public static void PerformAfterTrue(Func<bool> condition, Action action) => RunCoroutine(WaitUntilTrueIE(condition, action));
+    private static IEnumerator<float> WaitUntilTrueIE(Func<bool> condition, Action action)
     {
         if (condition != null)
         {
