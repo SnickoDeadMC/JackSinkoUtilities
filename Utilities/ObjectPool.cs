@@ -5,7 +5,9 @@ using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 
 public class ObjectPool : Singleton<ObjectPool> {
-    
+
+    //TODO: create an async object pool using addressables. Take inspiration from: https://thegamedev.guru/unity-addressables/pooling/
+
     [Tooltip("Assign poolable objects here")]
     [SerializeField] private PoolablePrefab[] poolablePrefabs;
     

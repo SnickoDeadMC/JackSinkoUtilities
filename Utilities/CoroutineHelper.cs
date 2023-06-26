@@ -8,6 +8,20 @@ using System;
 public static class CoroutineHelper
 {
 
+    //TODO: replace with MK coroutine helper
+    
+    public static void PerformAfterTrue(this MonoBehaviour monoBehaviour, Func<bool> condition, Action action)
+    {
+        monoBehaviour.StartCoroutine(PerformAfterTrueIE(condition, action));
+    }
+
+    private static IEnumerator PerformAfterTrueIE(Func<bool> condition, Action action)
+    {
+        if (condition != null && !condition.Invoke())
+            yield return new WaitUntil(condition);
+        action?.Invoke();
+    }
+    
     public static void PerformAfterDelay(float delay, Action action) => RunCoroutine(WaitForSecondsIE(delay, action));
     private static IEnumerator<float> WaitForSecondsIE(float delay, Action action)
     {
