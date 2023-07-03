@@ -5,6 +5,16 @@ using System;
 
 public class CoroutineHelper : Singleton<CoroutineHelper>
 {
+
+    public static void PerformAfterFixedUpdate(Action action, MonoBehaviour monoToRunOn = null)
+    {
+        if (action == null)
+            return;
+        
+        if (monoToRunOn == null)
+            monoToRunOn = Instance;
+        monoToRunOn.StartCoroutine(PerformAfterFixedUpdateIE(action));       
+    }
     
     public static void PerformAfterTrue(Func<bool> condition, Action action, MonoBehaviour monoToRunOn = null)
     {
@@ -32,6 +42,12 @@ public class CoroutineHelper : Singleton<CoroutineHelper>
         if (monoToRunOn == null)
             monoToRunOn = Instance;
         monoToRunOn.StartCoroutine(PerformAfterDelayIE(delay, action));
+    }
+    
+    private static IEnumerator PerformAfterFixedUpdateIE(Action action)
+    {
+        yield return new WaitForFixedUpdate();
+        action?.Invoke();
     }
     
     private static IEnumerator PerformAfterTrueIE(Func<bool> condition, Action action)

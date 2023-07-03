@@ -6,6 +6,11 @@ using UnityEngine;
 public static class CoroutineHelperExtensions
 {
 
+    public static void PerformAfterFixedUpdate(this MonoBehaviour monoBehaviour, Action action)
+    {
+        CoroutineHelper.PerformAfterFixedUpdate(action, monoBehaviour);
+    }
+    
     public static void PerformAfterTrue(this MonoBehaviour monoBehaviour, Func<bool> condition, Action action)
     {
         CoroutineHelper.PerformAfterTrue(condition, action, monoBehaviour);
