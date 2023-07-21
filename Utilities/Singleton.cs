@@ -2,11 +2,28 @@ using System;
 using UnityEngine;
 using MyBox;
 
+/// <summary>
+/// Generic singleton class.
+/// </summary>
+/// <remarks>You can add [ExecuteInEditMode] if you need the instance in edit mode (eg. for edit mode tests).</remarks>
 public abstract class Singleton<T> : Updatable where T : MonoBehaviour
 {
-    
-    public static T Instance { get; private set; }
-    
+
+    private static T instance;
+    public static T Instance
+    {
+        get
+        {
+            if (!Application.isPlaying)
+            {
+                if (instance == null)
+                    instance = FindObjectOfType<T>();
+                return instance;
+            }
+            return instance;
+        }
+    }
+
     [Foldout("Singleton"), InitializationField, SerializeField]
     protected bool dontDestroy = true;
 
@@ -14,6 +31,9 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
     {
         base.Initialise();
 
+        if (!Application.isPlaying)
+            return;
+        
         if (Instance != null)
         {
             //instance already exists, so just remove this new one
@@ -22,7 +42,7 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
             return;
         }
         
-        Instance = this as T;
+        instance = this as T;
         
         if (dontDestroy)
         {
