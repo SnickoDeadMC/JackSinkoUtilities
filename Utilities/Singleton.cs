@@ -17,7 +17,10 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
             if (instance == null)
             {
                 instance = FindObjectOfType<T>();
-                Debug.LogWarning($"Lazilly accessing {instance.name} singleton, as it is not yet initialised.");
+                if (instance == null)
+                    Debug.LogWarning($"Tried lazilly accessing {typeof(T)}, but it couldn't be found.");
+                if (Application.isPlaying)
+                    Debug.LogWarning($"Lazilly accessing {instance.name} singleton, as it is not yet initialised.");
             }
             
             return instance;
