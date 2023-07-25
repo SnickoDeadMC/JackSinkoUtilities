@@ -18,22 +18,23 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
             {
                 instance = FindObjectOfType<T>();
                 if (instance == null)
-                    Debug.LogWarning($"Tried lazilly accessing {typeof(T)}, but it couldn't be found.");
+                    throw new NullReferenceException(
+                        $"Tried lazilly accessing {typeof(T)}, but it couldn't be found in the scene.");
                 if (Application.isPlaying)
                     Debug.LogWarning($"Lazilly accessing {instance.name} singleton, as it is not yet initialised.");
             }
-            
+
             return instance;
         }
     }
 
     [Foldout("Singleton"), InitializationField, SerializeField]
     protected bool dontDestroy = true;
-    
-    protected override void Initialise()
+
+    protected override void Awake()
     {
-        base.Initialise();
-        
+        base.Awake();
+
         if (instance != null)
         {
             //instance already exists, so just remove this new one
@@ -41,9 +42,14 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        
+
+        Initialise();
+    }
+
+    protected virtual void Initialise()
+    {
         instance = this as T;
-        
+
         if (dontDestroy)
         {
             transform.parent = null; //can't be a child
