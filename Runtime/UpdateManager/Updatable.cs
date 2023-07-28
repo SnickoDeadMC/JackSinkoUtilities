@@ -76,19 +76,22 @@ public class Updatable : MonoBehaviour
     {
         if (isUpdateUsed)
         {
-            UpdateManager.Instance.OnUpdate -= FastUpdate;
+            if (UpdateManager.ExistsRuntime)
+                UpdateManager.Instance.OnUpdate -= FastUpdate;
             updateIsRegistered = false;
         }
 
         if (isLateUpdateUsed)
         {
-            UpdateManager.Instance.OnLateUpdate -= FastLateUpdate;
+            if (UpdateManager.ExistsRuntime)
+                UpdateManager.Instance.OnLateUpdate -= FastLateUpdate;
             lateUpdateIsRegistered = false;
         }
 
         if (isFixedUpdateUsed)
         {
-            UpdateManager.Instance.OnFixedUpdate -= FastFixedUpdate;
+            if (UpdateManager.ExistsRuntime)
+                UpdateManager.Instance.OnFixedUpdate -= FastFixedUpdate;
             fixedUpdateIsRegistered = false;
         }
     }
