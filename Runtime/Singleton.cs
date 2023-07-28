@@ -9,6 +9,11 @@ using MyBox;
 public abstract class Singleton<T> : Updatable where T : MonoBehaviour
 {
     
+    /// <summary>
+    /// Whether the instance exists at runtime.
+    /// </summary>
+    public static bool ExistsRuntime { get; private set; }
+    
     private static T instance;
     public static T Instance
     {
@@ -33,8 +38,6 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
 
     protected override void Awake()
     {
-        base.Awake();
-
         if (instance != null)
         {
             //instance already exists, so just remove this new one
@@ -45,9 +48,17 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
 
         Initialise();
     }
-
-    protected virtual void Initialise()
+    
+    private void OnDestroy()
     {
+        if (instance == this)
+            ExistsRuntime = false;
+    }
+
+    protected override void Initialise()
+    {
+        base.Initialise();
+        
         instance = this as T;
 
         if (dontDestroy)
@@ -55,6 +66,9 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
             transform.parent = null; //can't be a child
             DontDestroyOnLoad(gameObject);
         }
+        
+        if (Application.isPlaying)
+            ExistsRuntime = true;
     }
     
 }
