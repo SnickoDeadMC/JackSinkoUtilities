@@ -53,22 +53,22 @@ public class TweenHelper : MonoBehaviour
         if (!initialised)
             Initialise();
         
+        ResetTransform();
+
         currentTween?.Kill();
 
-        Sequence sequence = DOTween.Sequence();
+        currentTween = DOTween.Sequence();
         
         if (doPosition)
-            sequence.Join(GetPositionTween());
+            currentTween.Join(GetPositionTween());
         
-        sequence.SetLoops(-1, LoopType.Yoyo);
+        currentTween.SetLoops(-1, LoopType.Yoyo);
     }
 
     private void StopTween()
     {
         currentTween?.Kill();
         currentTween = null;
-        
-        ResetTransform();
     }
 
     private Tween GetPositionTween()
