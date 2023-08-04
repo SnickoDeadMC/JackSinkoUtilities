@@ -6,19 +6,24 @@ using UnityEngine;
 public static class CoroutineHelperExtensions
 {
 
-    public static void PerformAfterFixedUpdate(this MonoBehaviour monoBehaviour, Action action)
+    public static Coroutine PerformAtEndOfFrame(this MonoBehaviour monoBehaviour, Action action)
     {
-        CoroutineHelper.PerformAfterFixedUpdate(action, monoBehaviour);
+        return CoroutineHelper.PerformAtEndOfFrame(action, monoBehaviour);
     }
     
-    public static void PerformAfterTrue(this MonoBehaviour monoBehaviour, Func<bool> condition, Action action)
+    public static Coroutine PerformAfterFixedUpdate(this MonoBehaviour monoBehaviour, Action action)
     {
-        CoroutineHelper.PerformAfterTrue(condition, action, monoBehaviour);
+        return CoroutineHelper.PerformAfterFixedUpdate(action, monoBehaviour);
     }
     
-    public static void PerformAfterDelay(this MonoBehaviour monoBehaviour, float delay, Action action)
+    public static Coroutine PerformAfterTrue(this MonoBehaviour monoBehaviour, Func<bool> condition, Action action)
     {
-        CoroutineHelper.PerformAfterDelay(delay, action, monoBehaviour);
+        return CoroutineHelper.PerformAfterTrue(condition, action, monoBehaviour);
+    }
+    
+    public static Coroutine PerformAfterDelay(this MonoBehaviour monoBehaviour, float delay, Action action)
+    {
+        return CoroutineHelper.PerformAfterDelay(delay, action, monoBehaviour);
     }
     
 }

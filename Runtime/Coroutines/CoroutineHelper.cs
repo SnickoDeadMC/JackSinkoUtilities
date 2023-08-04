@@ -6,42 +6,58 @@ using System;
 public class CoroutineHelper : Singleton<CoroutineHelper>
 {
 
-    public static void PerformAfterFixedUpdate(Action action, MonoBehaviour monoToRunOn = null)
+    public static Coroutine PerformAtEndOfFrame(Action action, MonoBehaviour monoToRunOn = null)
     {
         if (action == null)
-            return;
+            return null;
+
+        if (monoToRunOn == null)
+            monoToRunOn = Instance;
+        return monoToRunOn.StartCoroutine(PerformAtEndOfFrameIE(action));
+    }
+    
+    public static Coroutine PerformAfterFixedUpdate(Action action, MonoBehaviour monoToRunOn = null)
+    {
+        if (action == null)
+            return null;
         
         if (monoToRunOn == null)
             monoToRunOn = Instance;
-        monoToRunOn.StartCoroutine(PerformAfterFixedUpdateIE(action));       
+        return monoToRunOn.StartCoroutine(PerformAfterFixedUpdateIE(action));       
     }
     
-    public static void PerformAfterTrue(Func<bool> condition, Action action, MonoBehaviour monoToRunOn = null)
+    public static Coroutine PerformAfterTrue(Func<bool> condition, Action action, MonoBehaviour monoToRunOn = null)
     {
         if (condition == null || condition.Invoke())
         {
             //can perform instantly
             action?.Invoke();
-            return;
+            return null;
         }
 
         if (monoToRunOn == null)
             monoToRunOn = Instance;
-        monoToRunOn.StartCoroutine(PerformAfterTrueIE(condition, action));
+        return monoToRunOn.StartCoroutine(PerformAfterTrueIE(condition, action));
     }
     
-    public static void PerformAfterDelay(float delay, Action action, MonoBehaviour monoToRunOn = null)
+    public static Coroutine PerformAfterDelay(float delay, Action action, MonoBehaviour monoToRunOn = null)
     {
         if (delay <= 0)
         {
             //can perform instantly
             action?.Invoke();
-            return;
+            return null;
         }
         
         if (monoToRunOn == null)
             monoToRunOn = Instance;
-        monoToRunOn.StartCoroutine(PerformAfterDelayIE(delay, action));
+        return monoToRunOn.StartCoroutine(PerformAfterDelayIE(delay, action));
+    }
+
+    private static IEnumerator PerformAtEndOfFrameIE(Action action)
+    {
+        yield return new WaitForEndOfFrame();
+        action?.Invoke();
     }
     
     private static IEnumerator PerformAfterFixedUpdateIE(Action action)
