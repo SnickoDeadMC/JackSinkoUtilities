@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class Vector3Extensions
+public static class VectorUtils
 {
     
     /// <summary>
@@ -26,4 +26,8 @@ public static class Vector3Extensions
         return new Vector3(x, y, z);
     }
     
+    public static bool ApproxEquals(Vector2 a, Vector2 b) {
+        return Vector2.SqrMagnitude(a - b) < 0.0001;
+    }
+
 }
