@@ -26,7 +26,9 @@ public class TweenHelper : MonoBehaviour
     private void Initialise()
     {
         initialised = true;
-        defaultPosition = transform.position;
+        if (transform is RectTransform rectTransform)
+            defaultPosition = rectTransform.anchoredPosition;
+        else defaultPosition = transform.position;
 
         float positionDurationAsPercent = positionRandomisedDurationPercent * positionDuration;
         finalPositionDuration = positionDuration *
@@ -45,7 +47,9 @@ public class TweenHelper : MonoBehaviour
 
     private void ResetTransform()
     {
-        transform.position = defaultPosition;
+        if (transform is RectTransform rectTransform)
+            rectTransform.anchoredPosition = defaultPosition;
+        else transform.position = defaultPosition;
     }
     
     private void StartTween()
@@ -73,7 +77,12 @@ public class TweenHelper : MonoBehaviour
 
     private Tween GetPositionTween()
     {
-        Tween tween = transform.DOMove(defaultPosition + new Vector3(xMovement, yMovement, zMovement), finalPositionDuration);
+        Tween tween;
+        if (transform is RectTransform rectTransform)
+            tween = DOTween.To(() => rectTransform.anchoredPosition, x => rectTransform.anchoredPosition = x,
+                new Vector2(defaultPosition.x, defaultPosition.y) + new Vector2(xMovement, yMovement), finalPositionDuration);
+        else tween = transform.DOMove(defaultPosition + new Vector3(xMovement, yMovement, zMovement), finalPositionDuration);
+        
         tween.SetEase(positionEase);
         return tween;
     }
