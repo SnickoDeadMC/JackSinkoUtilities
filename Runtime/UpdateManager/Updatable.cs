@@ -25,7 +25,14 @@ public class Updatable : MonoBehaviour
     [SerializeField, ReadOnly] protected bool lateUpdateIsRegistered;
     [Foldout("Updatable")] //end the foldout
     [SerializeField, ReadOnly] protected bool fixedUpdateIsRegistered;
-        
+
+    private void OnValidate()
+    {
+        //the initialised value should never be true while in editor (this can happen if copying components etc.)
+        if (initialised && !Application.isPlaying)
+            initialised = false;
+    }
+
     protected virtual void Awake()
     {
         if (!initialised)
