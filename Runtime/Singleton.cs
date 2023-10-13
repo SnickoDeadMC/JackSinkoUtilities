@@ -38,7 +38,7 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
 
     protected override void Awake()
     {
-        if (instance != null)
+        if (ExistsRuntime)
         {
             //instance already exists, so just remove this new one
             gameObject.SetActive(false); //set inactive so it doesn't trigger colliders etc.
