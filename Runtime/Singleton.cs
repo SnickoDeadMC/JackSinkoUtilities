@@ -23,8 +23,7 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
             {
                 instance = FindObjectOfType<T>();
                 if (instance == null)
-                    throw new NullReferenceException(
-                        $"Tried lazilly accessing {typeof(T)}, but it couldn't be found in the scene.");
+                    throw new NullReferenceException($"Tried lazilly accessing {typeof(T)}, but it couldn't be found in the scene.");
                 if (Application.isPlaying)
                     Debug.LogWarning($"Lazilly accessing {instance.name} singleton, as it is not yet initialised.");
             }
@@ -55,6 +54,14 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
             ExistsRuntime = false;
     }
 
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        
+        if (instance == this)
+            OnInstanceDisabled();
+    }
+
     protected override void Initialise()
     {
         base.Initialise();
@@ -70,5 +77,13 @@ public abstract class Singleton<T> : Updatable where T : MonoBehaviour
         if (Application.isPlaying)
             ExistsRuntime = true;
     }
-    
+
+    /// <summary>
+    /// Called when the singleton instance is disabled.
+    /// </summary>
+    protected virtual void OnInstanceDisabled()
+    {
+        
+    }
+
 }
