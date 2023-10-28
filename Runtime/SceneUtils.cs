@@ -1,10 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public static class SceneUtils
 {
+    
+    public static string GetScenePathFromName(string sceneName)
+    {
+        string[] scenes = new string[EditorBuildSettings.scenes.Length];
+        for (int i = 0; i < scenes.Length; i++)
+        {
+            scenes[i] = EditorBuildSettings.scenes[i].path;
+        }
+
+        foreach (string scene in scenes)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(scene);
+            if (fileName.Equals(sceneName))
+            {
+                return scene;
+            }
+        }
+
+        return null;
+    }
 
     public static List<T> GetAllComponentsInActiveScene<T>(bool includeDontDestroyOnLoad = false) where T : MonoBehaviour
     {
