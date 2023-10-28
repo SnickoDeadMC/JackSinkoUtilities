@@ -9,6 +9,7 @@ namespace MyBox
 	/// <summary>
 	/// Conditionally Show/Hide field in inspector, based on some other field value
 	/// </summary>
+	[Obsolete("Use HelpBoxAttribute instead.")]
 	[AttributeUsage(AttributeTargets.Field)]
 	public class ConditionalHelpBoxFieldAttribute : PropertyAttribute
 	{
