@@ -3,23 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class MultipleEnumUtils
+namespace JacksUtils
 {
-    
-    public static List<T> GetSelectedValues<T>(T enumProperty) where T : Enum
+    public static class MultipleEnumUtils
     {
-        List<T> selectedElements = new List<T>();
-        Array enumValues = Enum.GetValues(typeof(T));
-        for (int i = 0; i < enumValues.Length; i++)
+
+        public static List<T> GetSelectedValues<T>(T enumProperty) where T : Enum
         {
-            int layer = 1 << i;
-            if (((int)(object)enumProperty & layer) != 0)
+            List<T> selectedElements = new List<T>();
+            Array enumValues = Enum.GetValues(typeof(T));
+            for (int i = 0; i < enumValues.Length; i++)
             {
-                selectedElements.Add((T)enumValues.GetValue(i));
+                int layer = 1 << i;
+                if (((int)(object)enumProperty & layer) != 0)
+                {
+                    selectedElements.Add((T)enumValues.GetValue(i));
+                }
             }
+
+            return selectedElements;
         }
 
-        return selectedElements;
     }
-    
 }

@@ -1,8 +1,9 @@
 {
     "name": "JacksUtils.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "JacksUtils.Editor",
     "references": [
-        "GUID:48c9f6afdac61634db0e0f241c7d4d51"
+        "GUID:48c9f6afdac61634db0e0f241c7d4d51",
+        "GUID:4a7f103f848952f40abf055b5ec0548d"
     ],
     "includePlatforms": [
         "Editor"

@@ -4,65 +4,68 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-public static class TimeUtils
+namespace JacksUtils
 {
-    
-    public const long MillisecondsInSecond = 1000;
-    public const long SecondsInAMinute = 60;
-    public const long SecondsInAnHour = SecondsInAMinute * 60;
-    public const long SecondsInADay = SecondsInAnHour * 24;
-
-    private static readonly StringBuilder stringBuilder = new();
-    
-    public static string ToPrettyString(this TimeSpan timeSpan, bool includeMs = false, bool longVersion = false)
+    public static class TimeUtils
     {
-        stringBuilder.Clear();
-        bool showMinutes = timeSpan.Minutes > 0;
-        bool showSeconds = timeSpan.Seconds > 0;
 
-        if (timeSpan.Hours > 0)
-        {
-            stringBuilder.Append(timeSpan.Hours).Append(longVersion ? " Hours" : "h");
-            if (showMinutes || showSeconds) stringBuilder.Append(" ");
-        }
+        public const long MillisecondsInSecond = 1000;
+        public const long SecondsInAMinute = 60;
+        public const long SecondsInAnHour = SecondsInAMinute * 60;
+        public const long SecondsInADay = SecondsInAnHour * 24;
 
-        if (showMinutes)
-        {
-            stringBuilder.Append(timeSpan.Minutes).Append(longVersion ? " Minutes" : "m");
-            if (showSeconds) stringBuilder.Append(" ");
-        }
+        private static readonly StringBuilder stringBuilder = new();
 
-        if (showSeconds || includeMs)
+        public static string ToPrettyString(this TimeSpan timeSpan, bool includeMs = false, bool longVersion = false)
         {
-            if (includeMs)
+            stringBuilder.Clear();
+            bool showMinutes = timeSpan.Minutes > 0;
+            bool showSeconds = timeSpan.Seconds > 0;
+
+            if (timeSpan.Hours > 0)
             {
-                float roundedDownSeconds = Mathf.FloorToInt(timeSpan.Seconds);
-                float ms = (timeSpan - TimeSpan.FromSeconds(roundedDownSeconds)).Milliseconds;
+                stringBuilder.Append(timeSpan.Hours).Append(longVersion ? " Hours" : "h");
+                if (showMinutes || showSeconds) stringBuilder.Append(" ");
+            }
 
-                if (roundedDownSeconds > 0)
+            if (showMinutes)
+            {
+                stringBuilder.Append(timeSpan.Minutes).Append(longVersion ? " Minutes" : "m");
+                if (showSeconds) stringBuilder.Append(" ");
+            }
+
+            if (showSeconds || includeMs)
+            {
+                if (includeMs)
                 {
-                    //showing seconds AND ms
-                    int msAsPercent = Mathf.RoundToInt((ms / MillisecondsInSecond) * 100f);
-                    stringBuilder.Append($"{roundedDownSeconds}.{msAsPercent}{(longVersion ? " Seconds" : "s")}");
+                    float roundedDownSeconds = Mathf.FloorToInt(timeSpan.Seconds);
+                    float ms = (timeSpan - TimeSpan.FromSeconds(roundedDownSeconds)).Milliseconds;
+
+                    if (roundedDownSeconds > 0)
+                    {
+                        //showing seconds AND ms
+                        int msAsPercent = Mathf.RoundToInt((ms / MillisecondsInSecond) * 100f);
+                        stringBuilder.Append($"{roundedDownSeconds}.{msAsPercent}{(longVersion ? " Seconds" : "s")}");
+                    }
+                    else
+                    {
+                        //just showing ms
+                        stringBuilder.Append($"{ms}ms");
+                    }
                 }
                 else
                 {
-                    //just showing ms
-                    stringBuilder.Append($"{ms}ms");
+                    stringBuilder.Append(timeSpan.Seconds).Append(longVersion ? " Seconds" : "s");
                 }
             }
-            else
+
+            if (stringBuilder.Length == 0)
             {
-                stringBuilder.Append(timeSpan.Seconds).Append(longVersion ? " Seconds" : "s");
+                stringBuilder.Append(0).Append(longVersion ? " Seconds" : "s");
             }
+
+            return stringBuilder.ToString();
         }
 
-        if (stringBuilder.Length == 0)
-        {
-            stringBuilder.Append(0).Append(longVersion ? " Seconds" : "s");
-        }
-
-        return stringBuilder.ToString();
     }
-    
 }

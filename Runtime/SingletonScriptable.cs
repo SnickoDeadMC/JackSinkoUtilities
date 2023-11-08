@@ -6,27 +6,32 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Debug = UnityEngine.Debug;
 
-public class SingletonScriptable<T> : ScriptableObject where T : SingletonScriptable<T>
+namespace JacksUtils
 {
-
-    private static T instance;
-    public static T Instance
+    public class SingletonScriptable<T> : ScriptableObject where T : SingletonScriptable<T>
     {
-        get
+
+        private static T instance;
+
+        public static T Instance
         {
-            if (instance == null)
+            get
             {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                
-                AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(typeof(T).Name);
-                instance = handle.WaitForCompletion();
-                
-                stopwatch.Stop();
-                Debug.Log($"Had to load singleton scriptable {typeof(T).Name} synchronously ({stopwatch.ElapsedMilliseconds}ms)");
+                if (instance == null)
+                {
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
+
+                    AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(typeof(T).Name);
+                    instance = handle.WaitForCompletion();
+
+                    stopwatch.Stop();
+                    Debug.Log($"Had to load singleton scriptable {typeof(T).Name} synchronously ({stopwatch.ElapsedMilliseconds}ms)");
+                }
+
+                return instance;
             }
-            return instance;
         }
+
     }
-        
 }

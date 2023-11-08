@@ -3,26 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UpdateManager : Singleton<UpdateManager>
+namespace JacksUtils
 {
-
-    public event Action OnUpdate;
-    public event Action OnLateUpdate;
-    public event Action OnFixedUpdate;
-
-    private void Update()
+    public class UpdateManager : Singleton<UpdateManager>
     {
-        OnUpdate?.Invoke();
-    }
 
-    private void FixedUpdate()
-    {
-        OnFixedUpdate?.Invoke();
-    }
+        public event Action OnUpdate;
+        public event Action OnLateUpdate;
+        public event Action OnFixedUpdate;
 
-    private void LateUpdate()
-    {
-        OnLateUpdate?.Invoke();
+        private void Update()
+        {
+            OnUpdate?.Invoke();
+        }
+
+        private void FixedUpdate()
+        {
+            OnFixedUpdate?.Invoke();
+        }
+
+        private void LateUpdate()
+        {
+            OnLateUpdate?.Invoke();
+        }
+
     }
-    
 }

@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class LoggingTools
+namespace JacksUtils
 {
-    
-    /// <summary>
-    /// Splits a large stack trace across multiple debug messages.
-    /// </summary>
-    public static void LogLargeStackTrace(string fullStackTrace)
+    public static class LoggingTools
     {
+
+        /// <summary>
+        /// Splits a large stack trace across multiple debug messages.
+        /// </summary>
+        public static void LogLargeStackTrace(string fullStackTrace)
+        {
 #if !UNITY_EDITOR && DEVELOPMENT_BUILD
         const int maxStringSize = 1000;
         
@@ -32,9 +34,10 @@ public static class LoggingTools
             LogWithoutStack(LogType.Log, final);
         }
 #endif
+        }
+
+        public static void LogWithoutStack(LogType type, string message) =>
+            Debug.LogFormat(type, LogOption.NoStacktrace, null, message);
+
     }
-
-    public static void LogWithoutStack(LogType type, string message) =>
-        Debug.LogFormat(type, LogOption.NoStacktrace, null, message);
-
 }

@@ -3,24 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
-[Serializable]
-public struct MinMax
+namespace JacksUtils
 {
-
-    public float Min;
-    public float Max;
-
-    public float Difference => Max - Min;
-    
-    public MinMax(float min, float max)
+    [Serializable]
+    public struct MinMax
     {
-        Min = min;
-        Max = max;
-    }
 
-    public float GetRandomValue()
-    {
-        return Random.Range(Min, Max);
+        public float Min;
+        public float Max;
+
+        public float Difference => Max - Min;
+
+        public MinMax(float min, float max)
+        {
+            Min = min;
+            Max = max;
+        }
+
+        public float GetRandomValue()
+        {
+            return Random.Range(Min, Max);
+        }
+
     }
-    
 }
