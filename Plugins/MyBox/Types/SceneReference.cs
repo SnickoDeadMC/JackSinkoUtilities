@@ -35,11 +35,11 @@ namespace MyBox
 #endif
 
 		[Tooltip("The name of the referenced scene. This may be used at runtime to load the scene.")]
-		public string SceneName;
+		[ReadOnly] public string SceneName;
 
-		[SerializeField] private int sceneIndex = -1;
+		[SerializeField, ReadOnly] private int sceneIndex = -1;
 
-		[SerializeField] private bool sceneEnabled;
+		[SerializeField, ReadOnly] private bool sceneEnabled;
 
 		public bool IsAssigned => !string.IsNullOrEmpty(SceneName);
 
