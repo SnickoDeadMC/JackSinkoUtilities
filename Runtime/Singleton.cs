@@ -54,7 +54,7 @@ namespace JacksUtils
         private void OnDestroy()
         {
             if (instance == this)
-                ExistsRuntime = false;
+                OnInstanceDestroyed();
         }
 
         protected override void OnDisable()
@@ -87,6 +87,14 @@ namespace JacksUtils
         protected virtual void OnInstanceDisabled()
         {
 
+        }
+        
+        /// <summary>
+        /// Called when the singleton instance is destroyed.
+        /// </summary>
+        protected virtual void OnInstanceDestroyed()
+        {
+            ExistsRuntime = false;
         }
 
     }
