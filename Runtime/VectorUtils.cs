@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,11 @@ namespace JacksUtils
     public static class VectorUtils
     {
 
+        public static SerializedVector2 ToSerializedVector(this Vector2 vector)
+        {
+            return new SerializedVector2(vector.x, vector.y);
+        }
+        
         /// <summary>
         /// Multiplies each element in Vector3 v by the corresponding element of w.
         /// </summary>
@@ -34,4 +40,5 @@ namespace JacksUtils
         }
 
     }
+
 }
