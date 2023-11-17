@@ -344,16 +344,18 @@ namespace MagneticScrollUtils
 
         public void SnapToNextItem()
         {
-            if (ClosestIconToMagnetIndex + 1 >= icons.Count)
+            if (lastSelectedItemIndex + 1 >= items.Count)
                 return;
-            SnapIconToMagnet(icons[ClosestIconToMagnetIndex + 1]);
+            ScrollIcon iconToSelect = icons[ClosestIconToMagnetIndex + 1];
+            OnClickIcon(iconToSelect);
         }
 
         public void SnapToPreviousItem()
         {
-            if (ClosestIconToMagnetIndex - 1 < 0)
+            if (lastSelectedItemIndex - 1 < 0)
                 return;
-            SnapIconToMagnet(icons[ClosestIconToMagnetIndex - 1]);
+            ScrollIcon iconToSelect = icons[ClosestIconToMagnetIndex - 1];
+            OnClickIcon(iconToSelect);
         }
 
         public void SetItems(List<ScrollItem> newItems, int itemToSelectIndex = 0)
