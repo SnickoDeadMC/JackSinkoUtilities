@@ -74,7 +74,10 @@ namespace MyBox
 				throw new SceneLoadException("No scene specified.");
 
 			if (sceneIndex < 0)
+			{
+				SceneName = "NOT IN BUILD SETTINGS";
 				throw new SceneLoadException("Scene " + SceneName + " is not in the build settings");
+			}
 
 			if (!sceneEnabled)
 				throw new SceneLoadException("Scene " + SceneName + " is not enabled in the build settings");
@@ -90,6 +93,7 @@ namespace MyBox
 				
 				var sceneInBuild = Internal.SceneReferenceUtils.GetSceneInBuildState(sceneAssetGUID);
 				if (sceneInBuild.Enabled) SceneName = Scene.name;
+				else SceneName = "NOT IN BUILD SETTINGS";
 			}
 			else
 			{
