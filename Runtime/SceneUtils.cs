@@ -32,17 +32,17 @@ namespace JacksUtils
             return null;
         }
 
-        public static List<T> GetAllComponentsInActiveScene<T>(bool includeDontDestroyOnLoad = false) where T : MonoBehaviour
+        public static List<T> GetAllComponentsInActiveScene<T>(bool includeDontDestroyOnLoad = false) where T : Behaviour
         {
             return GetAllComponentsInScene<T>(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), includeDontDestroyOnLoad);
         }
 
-        public static List<T> GetAllComponentsInScene<T>(string sceneName, bool includeDontDestroyOnLoad = false) where T : MonoBehaviour
+        public static List<T> GetAllComponentsInScene<T>(string sceneName, bool includeDontDestroyOnLoad = false) where T : Behaviour
         {
             return GetAllComponentsInScene<T>(UnityEngine.SceneManagement.SceneManager.GetSceneByName(sceneName), includeDontDestroyOnLoad);
         }
 
-        public static List<T> GetAllComponentsInScene<T>(Scene scene, bool includeDontDestroyOnLoad = false) where T : MonoBehaviour
+        public static List<T> GetAllComponentsInScene<T>(Scene scene, bool includeDontDestroyOnLoad = false) where T : Behaviour
         {
             List<T> results = new List<T>();
 
@@ -78,7 +78,7 @@ namespace JacksUtils
         }
 
 
-        private static void FindGameObjectsWithComponentRecursive<T>(GameObject parent, List<T> resultsOutput)
+        private static void FindGameObjectsWithComponentRecursive<T>(GameObject parent, List<T> resultsOutput) where T : Behaviour
         {
             if (parent.GetComponent<T>() != null)
                 resultsOutput.Add(parent.GetComponent<T>());
