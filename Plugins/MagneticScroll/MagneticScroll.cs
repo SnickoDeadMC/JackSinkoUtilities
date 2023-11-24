@@ -818,28 +818,23 @@ namespace MagneticScrollUtils
             int maxItemIndex = items.Count - 1;
             if (maxItemIndex < lastIconIndex) lastIconIndex = maxItemIndex;
 
-            //initialise item indexes
+            //initialise item indexes:
 
             //take any icons before
             int iconsBefore = Mathf.FloorToInt(icons.Count / 2f); //magnet is always in the middle
-            int desiredFirstIndex = itemStartIndex - iconsBefore;
-            if (desiredFirstIndex < 0)
-                desiredFirstIndex = CanInfiniteScroll
-                    ? desiredFirstIndex + items.Count //wrap
-                    : 0;
-
-            int desiredLastIndex = desiredFirstIndex + icons.Count - 1;
-
-            firstItemIndexShowing = desiredFirstIndex;
+            
+            firstItemIndexShowing = CanInfiniteScroll ? itemStartIndex - iconsBefore : 0;
             if (firstItemIndexShowing < 0)
             {
-                firstItemIndexShowing = items.Count == 1 ? 0 : items.Count + (desiredFirstIndex % maxItemIndex); //wrap
+                firstItemIndexShowing = items.Count == 1 ? 0 : items.Count + (firstItemIndexShowing % maxItemIndex); //wrap
             }
 
-            lastItemIndexShowing = items.Count == 1 ? 0 : desiredLastIndex;
+            lastItemIndexShowing = CanInfiniteScroll ? itemStartIndex + iconsBefore : firstItemIndexShowing + icons.Count - 1;
             if (lastItemIndexShowing > items.Count - 1)
             {
-                lastItemIndexShowing = items.Count == 1 ? 0 : (desiredLastIndex % maxItemIndex) - 1; //wrap
+                if (CanInfiniteScroll)
+                    lastItemIndexShowing = items.Count == 1 ? 0 : (lastItemIndexShowing % maxItemIndex) - 1; //wrap
+                else lastItemIndexShowing = items.Count - 1;
             }
 
             if (isLoggingEnabled) Debug.Log("Reset index positions for " + gameObject.name + " to " + firstIconIndex + "-" + lastIconIndex + " / " + firstItemIndexShowing + "-" + lastItemIndexShowing);
