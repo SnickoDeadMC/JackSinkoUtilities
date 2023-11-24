@@ -183,6 +183,7 @@ namespace MagneticScrollUtils
         [ReadOnly, SerializeField] private float currentElasticityModifier;
 
         [ReadOnly, SerializeField] private int lastSelectedItemIndex;
+        [ReadOnly, SerializeField] private int lastSelectedIconIndex;
         [ReadOnly, SerializeField] private int closestIconToMagnetIndex = -1;
 
         #endregion
@@ -344,17 +345,30 @@ namespace MagneticScrollUtils
 
         public void SnapToNextItem()
         {
-            if (lastSelectedItemIndex + 1 >= items.Count)
-                return;
-            ScrollIcon iconToSelect = icons[lastSelectedItemIndex + 1];
+            int desiredIndex = lastSelectedIconIndex + 1;
+            if (desiredIndex == icons.Count)
+            {
+                desiredIndex = 0; //wrap
+            }
+
+            if (desiredIndex >= items.Count && !CanInfiniteScroll)
+                return; //not enough items to fill all icons
+            
+            ScrollIcon iconToSelect = icons[desiredIndex];
             OnClickIcon(iconToSelect);
         }
 
         public void SnapToPreviousItem()
         {
-            if (lastSelectedItemIndex - 1 < 0)
-                return;
-            ScrollIcon iconToSelect = icons[lastSelectedItemIndex - 1];
+            int desiredIndex = lastSelectedIconIndex - 1;
+            if (desiredIndex == -1)
+            {
+                if (!CanInfiniteScroll)
+                    return;
+                desiredIndex = icons.Count - 1; //wrap
+            }
+
+            ScrollIcon iconToSelect = icons[desiredIndex];
             OnClickIcon(iconToSelect);
         }
 
@@ -1098,6 +1112,7 @@ namespace MagneticScrollUtils
                 selectedItem.OnSelectComplete();
             
             lastSelectedItemIndex = items.IndexOf(selectedItem);
+            lastSelectedIconIndex = newIndex;
         }
 
         private void MoveAllItems(Vector2 amount)
