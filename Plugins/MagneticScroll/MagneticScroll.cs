@@ -396,6 +396,10 @@ namespace MagneticScrollUtils
                 }
             }
 
+            snapToItemOffscreenCoroutine = null;
+            selectedItemWhenPointerDown = -1;
+            clickedToSelect = false;
+            
             //calculate the movement difference:
             Vector2 oldDistance = movementOffset; //previously tracked movement offset
             Vector2 newDistance = distanceBetweenIcons * itemToSelectIndex; //the new desired movement offset
@@ -615,10 +619,6 @@ namespace MagneticScrollUtils
             scrollMaxPos = Vector2.zero;
             scrollMinPos = IsVertical ? -rectTransform.rect.size : rectTransform.rect.size;
 
-            snapToItemOffscreenCoroutine = null;
-            selectedItemWhenPointerDown = -1;
-            clickedToSelect = false;
-            
             if (populatesAtRuntime)
             {
                 Populate();
