@@ -346,7 +346,7 @@ namespace MagneticScrollUtils
         {
             if (lastSelectedItemIndex + 1 >= items.Count)
                 return;
-            ScrollIcon iconToSelect = icons[ClosestIconToMagnetIndex + 1];
+            ScrollIcon iconToSelect = icons[lastSelectedItemIndex + 1];
             OnClickIcon(iconToSelect);
         }
 
@@ -354,7 +354,7 @@ namespace MagneticScrollUtils
         {
             if (lastSelectedItemIndex - 1 < 0)
                 return;
-            ScrollIcon iconToSelect = icons[ClosestIconToMagnetIndex - 1];
+            ScrollIcon iconToSelect = icons[lastSelectedItemIndex - 1];
             OnClickIcon(iconToSelect);
         }
 
