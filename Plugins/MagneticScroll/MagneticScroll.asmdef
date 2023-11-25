@@ -1,6 +1,6 @@
 {
-    "name": "MagneticScroll",
-    "rootNamespace": "MagneticScroll",
+    "name": "MagneticScrollUtils",
+    "rootNamespace": "MagneticScrollUtils",
     "references": [
         "GUID:48c9f6afdac61634db0e0f241c7d4d51",
         "GUID:7a334f953df563b41b899526e2481761"
