@@ -12,26 +12,6 @@ namespace JacksUtils
     public static class SceneUtils
     {
 
-        public static string GetScenePathFromName(string sceneName)
-        {
-            string[] scenes = new string[EditorBuildSettings.scenes.Length];
-            for (int i = 0; i < scenes.Length; i++)
-            {
-                scenes[i] = EditorBuildSettings.scenes[i].path;
-            }
-
-            foreach (string scene in scenes)
-            {
-                string fileName = Path.GetFileNameWithoutExtension(scene);
-                if (fileName.Equals(sceneName))
-                {
-                    return scene;
-                }
-            }
-
-            return null;
-        }
-
         public static List<T> GetAllComponentsInActiveScene<T>(bool includeDontDestroyOnLoad = false) where T : Behaviour
         {
             return GetAllComponentsInScene<T>(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), includeDontDestroyOnLoad);
@@ -56,6 +36,28 @@ namespace JacksUtils
 
             return results;
         }
+        
+#if UNITY_EDITOR
+        public static string GetScenePathFromName(string sceneName)
+        {
+            string[] scenes = new string[EditorBuildSettings.scenes.Length];
+            for (int i = 0; i < scenes.Length; i++)
+            {
+                scenes[i] = EditorBuildSettings.scenes[i].path;
+            }
+
+            foreach (string scene in scenes)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(scene);
+                if (fileName.Equals(sceneName))
+                {
+                    return scene;
+                }
+            }
+
+            return null;
+        }
+#endif
 
         private static GameObject[] GetDontDestroyOnLoadObjects()
         {

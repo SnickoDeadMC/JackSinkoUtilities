@@ -3,8 +3,19 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace JacksUtils.Editor
+namespace JacksUtils
 {
+    
+#if !UNITY_EDITOR
+        public enum MessageType
+        {
+            None,
+            Info,
+            Warning,
+            Error
+        }
+#endif
+    
     public class HelpBoxAttribute : PropertyAttribute
     {
         public readonly string text;
@@ -22,6 +33,7 @@ namespace JacksUtils.Editor
         }
     }
 
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(HelpBoxAttribute))]
     public class HelpBoxDrawer : PropertyDrawer
     {
@@ -71,4 +83,5 @@ namespace JacksUtils.Editor
             };
         }
     }
+#endif
 }

@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
-namespace JacksUtils.Editor
+namespace JacksUtils
 {
     public class MultipleEnumAttribute : PropertyAttribute
     {
@@ -13,6 +15,7 @@ namespace JacksUtils.Editor
         }
     }
 
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(MultipleEnumAttribute))]
     public class EnumFlagsAttributeDrawer : PropertyDrawer
     {
@@ -28,4 +31,5 @@ namespace JacksUtils.Editor
             }
         }
     }
+#endif
 }
