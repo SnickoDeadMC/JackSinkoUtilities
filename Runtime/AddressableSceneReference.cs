@@ -23,9 +23,16 @@ namespace JacksUtils
         public void OnBeforeSerialize()
         {
 #if UNITY_EDITOR
-            if (scene == null || scene.editorAsset == null)
-                sceneName = null;
-            else sceneName = scene.editorAsset.name;
+            try
+            {
+                if (scene == null || scene.editorAsset == null)
+                    sceneName = null;
+                else sceneName = scene.editorAsset.name;
+            }
+            catch (UnityException)
+            {
+                //it will throw an error if trying to fetch the editorAsset when the domain is reloading - can safely ignore
+            }
 #endif
         }
 
