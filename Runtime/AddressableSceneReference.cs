@@ -17,9 +17,13 @@ namespace JacksUtils
 #endif
 
         [SerializeField, ReadOnly] private string sceneName;
-
+        
         public string SceneName => sceneName;
 
+#if UNITY_EDITOR
+        public SceneAsset EditorAsset => scene.editorAsset;
+#endif
+        
         public void OnBeforeSerialize()
         {
 #if UNITY_EDITOR
