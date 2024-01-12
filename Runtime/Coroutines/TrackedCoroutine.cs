@@ -20,8 +20,7 @@ namespace JacksUtils
 
         public TrackedCoroutine(IEnumerator action, Action onComplete = null)
         {
-            SetCoroutine(Start(action));
-            this.onComplete = onComplete;
+            SetCoroutine(Start(action), onComplete);
         }
 
         public TrackedCoroutine()
@@ -47,11 +46,12 @@ namespace JacksUtils
                 onComplete?.Invoke();
         }
 
-        public void SetCoroutine(IEnumerator action)
+        public void SetCoroutine(IEnumerator action, Action onComplete = null)
         {
             if (Coroutine != null)
                 Stop(false);
-            
+
+            this.onComplete = onComplete;
             Coroutine = CoroutineHelper.Instance.StartCoroutine(Start(action));
         }
         
