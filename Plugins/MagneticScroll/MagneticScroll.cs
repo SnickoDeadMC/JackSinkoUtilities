@@ -195,7 +195,10 @@ namespace MagneticScrollUtils
         private int selectedItemWhenPointerDown = -1;
         private bool clickedToSelect;
         private bool interactable = true;
-
+        
+        private int lastFrameWhenUpdatedItems;
+        private bool updatedItemsThisFrame => lastFrameWhenUpdatedItems == Time.frameCount;
+        
         private enum SnapToItemDirection
         {
             FORWARD,
@@ -259,7 +262,7 @@ namespace MagneticScrollUtils
 
         public bool CanInfiniteScroll => useInfiniteScroll && isInfiniteScrollEnabled;
 
-        private bool isTweening => icons.Count > 0 && icons[0].CurrentTween != null; //check if the first item is tweening
+        private bool isTweening => icons.Count > 0 && icons[0].CurrentTween != null && icons[0].CurrentTween.IsActive(); //check if the first item is tweening
         private bool isMoving => isScrolling || isDecelerating || isTweening;
 
         /// <summary>
@@ -382,6 +385,8 @@ namespace MagneticScrollUtils
 
         public void SetItems(List<ScrollItem> newItems, int itemToSelectIndex = 0)
         {
+            lastFrameWhenUpdatedItems = Time.frameCount;
+            
             items = newItems;
 
             gameObject.SetActive(newItems.Count > 0);
@@ -390,6 +395,12 @@ namespace MagneticScrollUtils
                 return; //no items to show
             }
 
+            if (itemToSelectIndex >= newItems.Count)
+                itemToSelectIndex = newItems.Count - 1;
+
+            if (itemToSelectIndex < 0)
+                itemToSelectIndex = 0;
+            
             if (!initialised)
             {
                 Initialise();
@@ -1128,7 +1139,7 @@ namespace MagneticScrollUtils
             ScrollItem selectedItem = selectedIcon.CurrentItem;
             selectedItem.OnSelect();
             
-            if (!isScrolling && !clickedToSelect)
+            if (!isScrolling && !clickedToSelect && !updatedItemsThisFrame)
                 selectedItem.OnSelectComplete();
             
             lastSelectedItemIndex = items.IndexOf(selectedItem);
