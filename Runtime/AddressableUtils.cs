@@ -10,6 +10,14 @@ namespace JacksUtils
 {
     public static class AddressableUtils
     {
+        
+        public static bool DoesAddressExist(string key)
+        {
+            AsyncOperationHandle<IList<IResourceLocation>> checkExists = Addressables.LoadResourceLocationsAsync(key);
+            bool doesExist = checkExists.Status == AsyncOperationStatus.Succeeded && checkExists.Result.Count > 0;
+            Addressables.Release(checkExists);
+            return doesExist;
+        }
 
         /// <remarks>Does not release the handles. This is typically for loading things that will stay in memory (like for ScriptableObject catalogues).</remarks>
         public static IEnumerator LoadAssetsAsync<T>(string label, List<T> list, Type type, Action onComplete = null)
