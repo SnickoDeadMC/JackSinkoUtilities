@@ -26,6 +26,8 @@ namespace JacksUtils
         
             SceneManager.activeSceneChanged -= OnSceneChange;
             SceneManager.activeSceneChanged += OnSceneChange;
+            
+            CreatePanelLookup();
         }
 
         private void OnSceneChange(Scene oldScene, Scene newScene)
