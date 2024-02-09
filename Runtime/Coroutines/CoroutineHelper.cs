@@ -5,7 +5,7 @@ using System;
 
 namespace JacksUtils
 {
-    public class CoroutineHelper : Singleton<CoroutineHelper>
+    public class CoroutineHelper : PersistentSingleton<CoroutineHelper>
     {
 
         public static Coroutine PerformAtEndOfFrame(Action action, MonoBehaviour monoToRunOn = null)
