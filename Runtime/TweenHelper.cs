@@ -23,19 +23,42 @@ namespace JacksUtils
         [ConditionalField(nameof(doPosition)), SerializeField, ReadOnly] private Vector3 defaultPosition;
         [ConditionalField(nameof(doPosition)), SerializeField, ReadOnly] private float finalPositionDuration;
 
+        [Header("Scale")]
+        [SerializeField] private bool doScale;
+
+        [ConditionalField(nameof(doScale)), SerializeField] private float scaleDuration;
+        [ConditionalField(nameof(doScale)), SerializeField, Range(0, 1)] private float scaleRandomisedDurationPercent = 0.1f;
+        [ConditionalField(nameof(doScale)), SerializeField] private Vector3 scaleAmount;
+        [ConditionalField(nameof(doScale)), SerializeField] private Ease scaleEase;
+        [ConditionalField(nameof(doScale)), SerializeField, ReadOnly] private Vector3 defaultScale;
+        [ConditionalField(nameof(doScale)), SerializeField, ReadOnly] private float finalScaleDuration;
+        
         private Sequence currentTween;
         private bool initialised;
 
         private void Initialise()
         {
             initialised = true;
-            if (transform is RectTransform rectTransform)
-                defaultPosition = rectTransform.anchoredPosition;
-            else defaultPosition = transform.position;
+            
+            if (doPosition)
+            {
+                if (transform is RectTransform rectTransform)
+                    defaultPosition = rectTransform.anchoredPosition;
+                else defaultPosition = transform.position;
+            
+                float positionDurationAsPercent = positionRandomisedDurationPercent * positionDuration;
+                finalPositionDuration = positionDuration *
+                                        Random.Range(positionDuration - positionDurationAsPercent, positionDuration + positionDurationAsPercent);
+            }
 
-            float positionDurationAsPercent = positionRandomisedDurationPercent * positionDuration;
-            finalPositionDuration = positionDuration *
-                                    Random.Range(positionDuration - positionDurationAsPercent, positionDuration + positionDurationAsPercent);
+            if (doScale)
+            {
+                defaultScale = transform.localScale;
+                
+                float scaleDurationAsPercent = scaleRandomisedDurationPercent * scaleDuration;
+                finalScaleDuration = scaleDuration *
+                                        Random.Range(scaleDuration - scaleDurationAsPercent, scaleDuration + scaleDurationAsPercent);
+            }
         }
 
         private void OnEnable()
@@ -50,9 +73,15 @@ namespace JacksUtils
 
         private void ResetTransform()
         {
-            if (transform is RectTransform rectTransform)
-                rectTransform.anchoredPosition = defaultPosition;
-            else transform.position = defaultPosition;
+            if (doPosition)
+            {
+                if (transform is RectTransform rectTransform)
+                    rectTransform.anchoredPosition = defaultPosition;
+                else transform.position = defaultPosition;
+            }
+
+            if (doScale)
+                transform.localScale = defaultScale;
         }
 
         private void StartTween()
@@ -68,6 +97,9 @@ namespace JacksUtils
 
             if (doPosition)
                 currentTween.Join(GetPositionTween());
+
+            if (doScale)
+                currentTween.Join(GetScaleTween());
 
             currentTween.SetLoops(-1, LoopType.Yoyo);
         }
@@ -87,6 +119,14 @@ namespace JacksUtils
             else tween = transform.DOMove(defaultPosition + new Vector3(xMovement, yMovement, zMovement), finalPositionDuration);
 
             tween.SetEase(positionEase);
+            return tween;
+        }
+        
+        private Tween GetScaleTween()
+        {
+            Tween tween = transform.DOScale(defaultScale + scaleAmount, finalScaleDuration);
+
+            tween.SetEase(scaleEase);
             return tween;
         }
 
