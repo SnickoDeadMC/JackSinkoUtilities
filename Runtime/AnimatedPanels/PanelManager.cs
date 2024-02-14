@@ -104,6 +104,8 @@ namespace JacksUtils
                 panelLookup[panel.GetType()] = panel;
                 if (panel.gameObject.activeInHierarchy)
                     panel.Show(); //starts showing
+                else
+                    panel.Hide(instant: true);
             }
         
             stopwatch.Stop();
