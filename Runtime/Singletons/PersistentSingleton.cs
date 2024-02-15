@@ -55,12 +55,6 @@ namespace JacksUtils
             instance = new GameObject(typeof(T).FullName).AddComponent<T>();
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
-        private static void RuntimeInitialise()
-        {
-            ExistsRuntime = false;
-        }
-
         #endregion
 
         protected void Awake()
