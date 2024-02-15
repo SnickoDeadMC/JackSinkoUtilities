@@ -1,13 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace JacksUtils
 {
-    public class MainThreadDispatcher : Singleton<MainThreadDispatcher>
+    public class MainThreadDispatcher : PersistentSingleton<MainThreadDispatcher>
     {
+
+        public Thread MainThread;
         
         private static readonly Queue<Action> _executionQueue = new();
 
@@ -19,7 +22,14 @@ namespace JacksUtils
                 _executionQueue.Clear();
             }
         }
-        
+
+        protected override void Initialise()
+        {
+            base.Initialise();
+            
+            MainThread = Thread.CurrentThread;
+        }
+
         public void Update() {
             lock(_executionQueue) {
                 while (_executionQueue.Count > 0) {
