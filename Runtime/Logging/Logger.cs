@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -33,7 +34,12 @@ namespace JacksUtils
 
             try
             {
-                //TODO: if it's an async thread, don't use the name - just use the message with [async]
+                if (MainThreadDispatcher.Instance.MainThread != Thread.CurrentThread)
+                {
+                    Debug.Log($"[async] {message}");
+                    return;
+                }
+                
                 Debug.Log($"[{name}] {message}");
             }
             catch (Exception e)
