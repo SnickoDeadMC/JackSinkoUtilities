@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a43b47e62c3748849aacd76f049ad2d1, type: 3}
-  m_Name: UtilsLoggers
+  m_Script: {fileID: 11500000, guid: 0a46e1a7d4c638742a9c4ef3a101cc50, type: 3}
+  m_Name: ObjectPoolLogger
   m_EditorClassIdentifier: 
-  panelLogger: {fileID: 11400000, guid: 4c1f939b5f10ece438b246ce211468c5, type: 2}
-  objectPoolLogger: {fileID: 11400000, guid: 8381ee5f0f7e7a34691bd7c52caa0b44, type: 2}
+  isEnabled: 0

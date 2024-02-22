@@ -9,8 +9,10 @@ namespace JacksUtils
     {
 
         public static Logger PanelLogger => Instance.panelLogger;
+        public static Logger ObjectPoolLogger => Instance.objectPoolLogger;
 
         [SerializeField] private Logger panelLogger;
-
+        [SerializeField] private Logger objectPoolLogger;
+        
     }
 }
