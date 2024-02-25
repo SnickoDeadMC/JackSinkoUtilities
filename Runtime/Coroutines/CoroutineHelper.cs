@@ -7,6 +7,33 @@ namespace JacksUtils
 {
     public class CoroutineHelper : PersistentSingleton<CoroutineHelper>
     {
+        
+        public static event Action onUnityUpdate;
+        public static event Action onUnityLateUpdate;
+        public static event Action onUnityFixedUpdate;
+
+        [RuntimeInitializeOnLoadMethod]
+        private static void RuntimeInitialise()
+        {
+            onUnityUpdate = null;
+            onUnityLateUpdate = null;
+            onUnityFixedUpdate = null;
+        }
+        
+        private void Update()
+        {
+            onUnityUpdate?.Invoke();
+        }
+
+        private void LateUpdate()
+        {
+            onUnityLateUpdate?.Invoke();
+        }
+
+        private void FixedUpdate()
+        {
+            onUnityFixedUpdate?.Invoke();
+        }
 
         public static Coroutine PerformAtEndOfFrame(Action action, MonoBehaviour monoToRunOn = null)
         {
