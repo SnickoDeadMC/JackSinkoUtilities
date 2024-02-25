@@ -1,0 +1,160 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using MyBox;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem.Utilities;
+using UnityEngine.UI;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+
+namespace JacksUtils
+{
+    /// <summary>
+    /// Listen for presses from all active touches.
+    /// </summary>
+    [RequireComponent(typeof(Image))]
+    public class VirtualButton : MonoBehaviour
+    {
+        
+        public event Action onPress;
+        public event Action<Vector2> onDrag;
+        public event Action onRelease;
+
+        [SerializeField] private UnityEvent onStartPressing;
+        [SerializeField] private UnityEvent onHoldPress;
+        [SerializeField] private UnityEvent onStopPressing;
+
+        [Header("Settings")]
+        [Tooltip("Should it only be pressed when the pointer goes down, or can the pointer go down, and then drag over the button for it to be pressed?")]
+        [SerializeField] private bool canOnlyBePressedOnPointerDown;
+        [Tooltip("Should the press be cancelled if the pointer is no longer on top of the selectable?")]
+        [SerializeField] private bool pointerMustBeOnRect = true;
+        [Tooltip("Can the button be pressed if it is blocked by graphics on top of this one?")]
+        [SerializeField] private bool canBePressedIfBlocked = true;
+
+        [Header("Debugging")]
+        [SerializeField, ReadOnly] private bool isPressingButton;
+        
+        private Vector2 lastKnownPosition;
+        private ReadOnlyArray<Touch> previousTouches;
+        
+        public bool IsPressingButton => isPressingButton;
+        
+        private Image image => GetComponent<Image>();
+
+        private void Update()
+        {
+            CheckIfButtonIsPressed();
+            if (IsPressingButton)
+                OnHold();
+        }
+        
+        private void CheckIfButtonIsPressed()
+        {
+            bool isPressed = false;
+            foreach (Touch touch in InputManager.ActiveTouches)
+            {
+                if (IsScreenPositionWithinGraphic(image, touch.screenPosition)
+                    && (!canBePressedIfBlocked || IsHighestPriorityAtPosition(touch.screenPosition))
+                    && (!canOnlyBePressedOnPointerDown || !previousTouches.Contains(touch)))
+                {
+                    isPressed = true;
+                    break;
+                }
+            }
+
+            previousTouches = InputManager.ActiveTouches;
+
+            if (isPressed && !IsPressingButton)
+                OnPress();
+
+            if (pointerMustBeOnRect)
+            {
+                if (!isPressed && IsPressingButton)
+                    OnRelease();
+            }
+            else
+            {
+                if (!PrimaryContactInput.IsPressed && IsPressingButton)
+                    OnRelease();
+            }
+        }
+
+        private bool IsHighestPriorityAtPosition(Vector2 screenPosition)
+        {
+            List<Graphic> clickableGraphics = GraphicUtils.GetClickableGraphics(screenPosition);
+            
+            //TODO: loop over the graphics and check if they are lower in the hierarchy, or their closest shared parents if they have parents (using GetSiblingIndex) (ignoring if it is this 'image')
+            //if they are on different canvases, compare the canvases 'sort order'
+        }
+        
+        private void OnPress()
+        {
+            isPressingButton = true;
+            
+            lastKnownPosition = PrimaryContactInput.Position;
+
+            onPress?.Invoke();
+            onStartPressing?.Invoke();
+            UtilsLoggers.InputLogger.Log($"Pressed {gameObject.name}");
+        }
+
+        private void OnRelease()
+        {
+            isPressingButton = false;
+
+            onRelease?.Invoke();
+            onStopPressing?.Invoke();
+            UtilsLoggers.InputLogger.Log($"Depressed {gameObject.name}");
+        }
+
+        private void OnHold()
+        {
+            Vector2 offset = PrimaryContactInput.Position - lastKnownPosition;
+            lastKnownPosition = PrimaryContactInput.Position;
+            
+            if (offset.sqrMagnitude > 0.01f)
+                OnDrag(offset);
+
+            onHoldPress?.Invoke();
+        }
+
+        private void OnDrag(Vector2 offset)
+        {
+            onDrag?.Invoke(offset);
+        }
+        
+        private bool IsScreenPositionWithinGraphic(Graphic graphic, Vector2 screenPosition)
+        {
+            Vector4 padding = graphic.raycastPadding;
+
+            Vector3[] corners = new Vector3[4];
+            graphic.rectTransform.GetWorldCorners(corners);
+
+            Rect rectWithPadding = new Rect(
+                corners[0].x + padding.x,
+                corners[0].y + padding.y,
+                corners[2].x - corners[0].x - padding.x - padding.z,
+                corners[2].y - corners[0].y - padding.y - padding.w
+            );
+#if UNITY_EDITOR
+            rectToDraw = rectWithPadding;
+#endif            
+            
+            return rectWithPadding.Contains(screenPosition);
+        }
+
+#if UNITY_EDITOR
+        private Rect rectToDraw;
+        private void OnDrawGizmos()
+        {
+            Handles.color = Color.red;
+            Handles.DrawWireCube(rectToDraw.center, new Vector3(rectToDraw.width, rectToDraw.height, 0));
+        }
+#endif
+
+    }
+}

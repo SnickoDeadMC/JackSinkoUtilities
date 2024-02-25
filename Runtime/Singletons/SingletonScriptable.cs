@@ -25,12 +25,20 @@ namespace JacksUtils
                     AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(typeof(T).Name);
                     instance = handle.WaitForCompletion();
 
+                    if (instance != null)
+                        instance.OnInstanceLoaded();
+                    
                     stopwatch.Stop();
                     Debug.Log($"Had to load singleton scriptable {typeof(T).Name} synchronously ({stopwatch.ElapsedMilliseconds}ms)");
                 }
 
                 return instance;
             }
+        }
+
+        protected virtual void OnInstanceLoaded()
+        {
+            
         }
 
     }
