@@ -70,7 +70,7 @@ namespace JacksUtils
             {
                 if ((!canOnlyBePressedOnPointerDown || !previousTouches.Contains(touch))
                     && IsScreenPositionWithinGraphic(image, touch.screenPosition)
-                    && (!canBePressedIfBlocked || GraphicUtils.GetClickableGraphic(graphicRaycaster, touch.screenPosition) == image))
+                    && (canBePressedIfBlocked || GraphicUtils.GetClickableGraphic(graphicRaycaster, touch.screenPosition) == image))
                 {
                     isPressed = true;
                     break;
