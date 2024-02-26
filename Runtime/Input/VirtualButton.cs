@@ -40,11 +40,22 @@ namespace JacksUtils
         
         private Vector2 lastKnownPosition;
         private ReadOnlyArray<Touch> previousTouches;
+        private GraphicRaycaster graphicRaycasterCached;
         
         public bool IsPressingButton => isPressingButton;
         
         private Image image => GetComponent<Image>();
 
+        private GraphicRaycaster graphicRaycaster
+        {
+            get
+            {
+                if (graphicRaycasterCached == null)
+                    graphicRaycasterCached = transform.GetComponentsInAllParents<GraphicRaycaster>();
+                return graphicRaycasterCached;
+            }
+        }
+        
         private void Update()
         {
             CheckIfButtonIsPressed();
@@ -57,9 +68,9 @@ namespace JacksUtils
             bool isPressed = false;
             foreach (Touch touch in InputManager.ActiveTouches)
             {
-                if (IsScreenPositionWithinGraphic(image, touch.screenPosition)
-                    && (!canBePressedIfBlocked || IsHighestPriorityAtPosition(touch.screenPosition))
-                    && (!canOnlyBePressedOnPointerDown || !previousTouches.Contains(touch)))
+                if ((!canOnlyBePressedOnPointerDown || !previousTouches.Contains(touch))
+                    && IsScreenPositionWithinGraphic(image, touch.screenPosition)
+                    && (!canBePressedIfBlocked || GraphicUtils.GetClickableGraphic(graphicRaycaster, touch.screenPosition) == image))
                 {
                     isPressed = true;
                     break;
@@ -83,14 +94,6 @@ namespace JacksUtils
             }
         }
 
-        private bool IsHighestPriorityAtPosition(Vector2 screenPosition)
-        {
-            List<Graphic> clickableGraphics = GraphicUtils.GetClickableGraphics(screenPosition);
-            
-            //TODO: loop over the graphics and check if they are lower in the hierarchy, or their closest shared parents if they have parents (using GetSiblingIndex) (ignoring if it is this 'image')
-            //if they are on different canvases, compare the canvases 'sort order'
-        }
-        
         private void OnPress()
         {
             isPressingButton = true;

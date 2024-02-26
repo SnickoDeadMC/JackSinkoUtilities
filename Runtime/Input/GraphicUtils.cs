@@ -8,6 +8,21 @@ namespace JacksUtils
 {
     public static class GraphicUtils
     {
+        
+        private static PointerEventData pointerEventData;
+        
+        public static Graphic GetClickableGraphic(GraphicRaycaster raycaster, Vector2 screenPosition)
+        {
+            //initialise
+            pointerEventData ??= new PointerEventData(EventSystem.current);
+            pointerEventData.position = screenPosition;
+
+            List<RaycastResult> results = new List<RaycastResult>();
+
+            raycaster.Raycast(pointerEventData, results);
+
+            return results.Count == 0 ? null : results[0].gameObject.GetComponent<Graphic>();
+        }
 
         /// <summary>
         /// Gets the raycastable graphics under the specified screen position, and add them to the supplied output list.
