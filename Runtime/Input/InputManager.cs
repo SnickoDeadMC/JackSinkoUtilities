@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.InputSystem.Utilities;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace JacksUtils
 {
-    [CreateAssetMenu(menuName = "Input/Input Manager (Utils)")]
-    public class InputManager : SingletonScriptable<InputManager>
+    public class InputManager : PersistentSingleton<InputManager>
     {
         
         [SerializeField] private InputActionAsset controls;
-        
+        [SerializeField] private PlayerInput playerInput;
+
         [Header("Action maps")]
         [SerializeField] private GeneralInputManager generalInput;
         
@@ -20,14 +22,25 @@ namespace JacksUtils
         public GeneralInputManager GeneralInput => generalInput;
 
         public static ReadOnlyArray<Touch> ActiveTouches => Touch.activeTouches;
-        
-        protected override void OnInstanceLoaded()
+
+        protected override void Initialise()
         {
-            base.OnInstanceLoaded();
+            base.Initialise();
             
+            ForceTouchSimulation();
+
             generalInput.Enable();
-
         }
-
+        
+        private void ForceTouchSimulation()
+        {
+            TouchSimulation.Enable();
+                    
+            DontDestroyOnLoad(TouchSimulation.instance.gameObject);
+            
+            //need to set the device as the current device after enabled
+            playerInput.SwitchCurrentControlScheme(InputSystem.devices.First(device => device == Touchscreen.current));
+        }
+        
     }
 }
