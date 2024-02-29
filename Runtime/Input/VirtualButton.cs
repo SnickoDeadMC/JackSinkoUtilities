@@ -62,15 +62,13 @@ namespace JacksUtils
             if (IsPressingButton)
                 OnHold();
         }
-        
+
         private void CheckIfButtonIsPressed()
         {
             bool isPressed = false;
             foreach (Touch touch in InputManager.ActiveTouches)
             {
-                if ((!canOnlyBePressedOnPointerDown || !previousTouches.Contains(touch))
-                    && IsScreenPositionWithinGraphic(image, touch.screenPosition)
-                    && (canBePressedIfBlocked || GraphicUtils.GetClickableGraphic(graphicRaycaster, touch.screenPosition) == image))
+                if (IsButtonPressedWithTouch(touch))
                 {
                     isPressed = true;
                     break;
@@ -92,6 +90,20 @@ namespace JacksUtils
                 if (!PrimaryContactInput.IsPressed && IsPressingButton)
                     OnRelease();
             }
+        }
+        
+        private bool IsButtonPressedWithTouch(Touch touch)
+        {
+            if (canOnlyBePressedOnPointerDown && previousTouches.Contains(touch))
+                return false;
+
+            if (!IsScreenPositionWithinGraphic(image, touch.screenPosition))
+                return false;
+
+            if (!canBePressedIfBlocked && GraphicUtils.GetClickableGraphic(graphicRaycaster, touch.screenPosition) != image)
+                return false;
+
+            return true;
         }
 
         private void OnPress()
