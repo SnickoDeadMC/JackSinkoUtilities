@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 namespace JacksUtils
 {
-    public abstract class ActionMapManager : ScriptableObject
+    public abstract class ActionMapManager : MonoBehaviour
     {
 
         private readonly Dictionary<string, InputAction> actionsCached = new();
@@ -15,6 +15,14 @@ namespace JacksUtils
 
         private InputActionMap ActionMap =>
             actionsMapCached ??= InputManager.Instance.Controls.FindActionMap(GetActionMapName());
+
+        private bool isInitialised;
+
+        private void OnEnable()
+        {
+            if (!isInitialised)
+                Initialise();
+        }
 
         public void Enable(bool enable = true)
         {
@@ -28,26 +36,34 @@ namespace JacksUtils
                 ActionMap.Disable();
                 OnDisableMap();
             }
-
-            UtilsLoggers.InputLogger.Log($"{(enable ? "Enabled" : "Disabled")} action map {GetActionMapName()}");
         }
 
         public void Disable() => Enable(false);
 
+        protected virtual void Initialise()
+        {
+            isInitialised = true;
+
+            actionsCached.Clear(); //reset so the cache can be updated
+        }
+        
         protected virtual void OnEnableMap()
         {
-            
+            UtilsLoggers.InputLogger.Log($"Enabled action map {GetActionMapName()}");
         }
 
         protected virtual void OnDisableMap()
         {
-            
+            UtilsLoggers.InputLogger.Log($"Disabled action map {GetActionMapName()}");
         }
 
         protected InputAction GetOrCacheAction(string action)
         {
             if (!actionsCached.ContainsKey(action))
+            {
                 actionsCached[action] = InputManager.Instance.Controls.FindAction(action);
+                UtilsLoggers.InputLogger.Log($"Updated cache for {action} in {GetActionMapName()}");
+            }
 
             return actionsCached[action];
         }

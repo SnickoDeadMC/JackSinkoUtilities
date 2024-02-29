@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 
 namespace JacksUtils
 {
-    [CreateAssetMenu(menuName = "Input/Action Maps/General")]
     public class GeneralInputManager : ActionMapManager
     {
 

@@ -9,7 +9,7 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace JacksUtils
 {
-    public class InputManager : PersistentSingleton<InputManager>
+    public class InputManager : Singleton<InputManager>
     {
         
         [SerializeField] private InputActionAsset controls;
@@ -27,6 +27,9 @@ namespace JacksUtils
         {
             base.Initialise();
             
+            EnhancedTouchSupport.Enable();
+            UtilsLoggers.InputLogger.Log("Enhanced touch support has been force enabled.");
+            
             ForceTouchSimulation();
 
             generalInput.Enable();
@@ -35,11 +38,14 @@ namespace JacksUtils
         private void ForceTouchSimulation()
         {
             TouchSimulation.Enable();
-                    
+
             DontDestroyOnLoad(TouchSimulation.instance.gameObject);
-            
+
             //need to set the device as the current device after enabled
-            playerInput.SwitchCurrentControlScheme(InputSystem.devices.First(device => device == Touchscreen.current));
+            InputDevice touchscreen = InputSystem.devices.First(device => device == Touchscreen.current);
+            playerInput.SwitchCurrentControlScheme(touchscreen);
+            
+            UtilsLoggers.InputLogger.Log("Touch simulation has been force enabled.");
         }
         
     }
