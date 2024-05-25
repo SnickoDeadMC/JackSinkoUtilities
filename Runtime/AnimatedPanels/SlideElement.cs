@@ -10,37 +10,56 @@ namespace JacksUtils
     [Serializable]
     public class SlideElement : AnimatedElement
     {
+        
+        public enum ScreenPosition
+        {
+            NONE,
+            TOP,
+            BOTTOM
+        }
 
         public RectTransform rectTransform;
 
         [Space(5)] [ConditionalField(nameof(doShowAnimation))]
-        public Vector3 shownPosition;
+        public Vector2 shownPosition;
 
         [ConditionalField(nameof(doHideAnimation))]
-        public bool hideAtTopOfScreen = true;
+        public ScreenPosition hideOutsideScreen;
 
-        [ConditionalField(new[] { nameof(doHideAnimation), nameof(hideAtTopOfScreen) }, new[] { false, true })]
-        [SerializeField]
-        private Vector2 hiddenPosition = Vector2.up * 1000;
+        [ConditionalField(new[] { nameof(doHideAnimation), nameof(hideOutsideScreen) }, new[] { false, true })]
+        [SerializeField] private Vector2 hiddenPosition;
 
         public Vector2 HiddenPosition
         {
             get
             {
-                if (!hideAtTopOfScreen)
-                    return hiddenPosition;
-
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform,
-                    new Vector2(0, Screen.height), null, out var topOfScreenLocal);
-                return new Vector2(0, topOfScreenLocal.y);
+                switch (hideOutsideScreen)
+                {
+                    case ScreenPosition.NONE:
+                        return hiddenPosition;
+                    case ScreenPosition.TOP:
+                    {
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform,
+                            new Vector2(0, Screen.height), null, out var topOfScreenLocal);
+                        return new Vector2(0, topOfScreenLocal.y);
+                    }
+                    case ScreenPosition.BOTTOM:
+                    {
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform,
+                            new Vector2(0, -Screen.height), null, out var topOfScreenLocal);
+                        return new Vector2(0, topOfScreenLocal.y);
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
         }
 
         [Space(5)] [ConditionalField(nameof(doShowAnimation))]
-        public Ease showEase = Ease.InOutSine;
+        public Ease showEase;
 
         [ConditionalField(nameof(doHideAnimation))]
-        public Ease hideEase = Ease.InOutSine;
+        public Ease hideEase;
 
         public SlideElement(
             RectTransform rectTransform,
@@ -55,9 +74,9 @@ namespace JacksUtils
             Ease hideEase = Ease.InOutSine,
             bool startHidden = true,
             bool disableWhenHidden = true,
-            bool hideAtTopOfScreen = false,
-            Vector3 hiddenPosition = default,
-            Vector3 shownPosition = default)
+            ScreenPosition hideOutsideScreen = ScreenPosition.NONE,
+            Vector2 hiddenPosition = default,
+            Vector2 shownPosition = default)
         {
             this.rectTransform = rectTransform;
             this.doShowAnimation = doShowAnimation;
@@ -71,7 +90,7 @@ namespace JacksUtils
             this.hideEase = hideEase;
             this.startHidden = startHidden;
             this.disableWhenHidden = disableWhenHidden;
-            this.hideAtTopOfScreen = hideAtTopOfScreen;
+            this.hideOutsideScreen = hideOutsideScreen;
             this.hiddenPosition = hiddenPosition;
             this.shownPosition = shownPosition;
         }
@@ -102,10 +121,14 @@ namespace JacksUtils
             Tween tween = rectTransform.DOAnchorPos(HiddenPosition, hideDuration).SetEase(hideEase);
 
             if (disableWhenHidden)
-                tween.OnComplete(() => rectTransform.gameObject.SetActive(false));
+                tween.OnComplete(() =>
+                {
+                    if (rectTransform != null) //might be null if app is exiting
+                        rectTransform.gameObject.SetActive(false);
+                });
 
             return tween;
         }
-
+        
     }
 }
