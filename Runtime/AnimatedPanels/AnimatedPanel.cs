@@ -40,7 +40,7 @@ namespace JacksUtils
 
         //shortcuts for unity events:
         public void Show() => Show(null);
-        public void Hide() => Hide(false, false, null);
+        public void Hide() => Hide(false, false, true, null);
 
         public Sequence Show(Action onComplete = null)
         {
@@ -91,7 +91,7 @@ namespace JacksUtils
             return currentTween;
         }
 
-        public Sequence Hide(bool keepInStack = false, bool instant = false, Action onComplete = null)
+        public Sequence Hide(bool keepInStack = false, bool instant = false, bool triggerOnComplete = true, Action onComplete = null)
         {
             if (!IsShowing && !instant)
             {
@@ -124,8 +124,11 @@ namespace JacksUtils
                 if (disableWhenHidden)
                     gameObject.SetActive(false);
 
-                onComplete?.Invoke();
-                OnHideComplete();
+                if (triggerOnComplete)
+                {
+                    onComplete?.Invoke();
+                    OnHideComplete();
+                }
             });
 
             if (ignoreTimescale)
@@ -139,7 +142,8 @@ namespace JacksUtils
             if (!keepInStack && PanelManager.ExistsRuntime && PanelManager.Instance.PanelStack.Contains(this))
                 PanelManager.Instance.RemoveFromStack(this);
 
-            OnHide();
+            if (triggerOnComplete)
+                OnHide();
 
             UtilsLoggers.PanelLogger.Log($"Hiding {gameObject.name}.");
 

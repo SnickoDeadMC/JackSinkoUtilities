@@ -105,7 +105,7 @@ namespace JacksUtils
                 if (panel.gameObject.activeInHierarchy)
                     panel.Show(); //starts showing
                 else
-                    panel.Hide(instant: true);
+                    panel.Hide(instant: true, triggerOnComplete: false);
             }
         
             stopwatch.Stop();
