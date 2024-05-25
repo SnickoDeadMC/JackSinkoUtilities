@@ -100,8 +100,12 @@ namespace JacksUtils
             if (!IsScreenPositionWithinGraphic(image, touch.screenPosition))
                 return false;
 
-            if (!canBePressedIfBlocked && GraphicUtils.GetClickableGraphic(graphicRaycaster, touch.screenPosition) != image)
-                return false;
+            if (!canBePressedIfBlocked)
+            {
+                Graphic graphicUnderPointer = GraphicUtils.GetClickableGraphic(graphicRaycaster, touch.screenPosition);
+                if (graphicUnderPointer != null && graphicUnderPointer != image)
+                    return false;
+            }
 
             return true;
         }
