@@ -7,7 +7,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
-namespace Neko
+namespace JacksUtils
 {
     public class UniqueScriptableObject : ScriptableObject
     {
